@@ -7,28 +7,74 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f0; min-height: 100vh; display: flex; justify-content: center; padding: 2rem 1rem; }
-  .container { width: 100%; max-width: 680px; }
-  .header { display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f0; min-height: 100vh; }
+
+  /* PASSWORD SCREEN */
+  .lock-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+  .lock-card { background: white; border: 1px solid #e8e8e4; border-radius: 16px; padding: 2rem; width: 100%; max-width: 360px; text-align: center; }
+  .lock-logo { width: 56px; height: 56px; background: #1D9E75; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+  .lock-logo i { color: white; font-size: 26px; }
+  .lock-title { font-size: 18px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
+  .lock-sub { font-size: 13px; color: #888; margin-bottom: 1.5rem; }
+  .lock-input { width: 100%; padding: 11px 14px; border: 1px solid #e8e8e4; border-radius: 8px; font-size: 15px; text-align: center; letter-spacing: 4px; outline: none; transition: border 0.15s; margin-bottom: 10px; }
+  .lock-input:focus { border-color: #1D9E75; }
+  .lock-btn { width: 100%; padding: 12px; background: #1D9E75; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+  .lock-btn:hover { background: #0F6E56; }
+  .lock-error { color: #993C1D; font-size: 13px; margin-top: 8px; display: none; }
+
+  /* MAIN APP */
+  .app { display: none; justify-content: center; padding: 2rem 1rem; }
+  .app.visible { display: flex; }
+  .container { width: 100%; max-width: 720px; }
+  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+  .header-left { display: flex; align-items: center; gap: 12px; }
   .logo { width: 40px; height: 40px; background: #1D9E75; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
   .logo i { color: white; font-size: 20px; }
   .title { font-size: 20px; font-weight: 600; color: #1a1a1a; }
   .subtitle { font-size: 13px; color: #888; }
+  .badge-live { display: inline-block; background: #E1F5EE; color: #0F6E56; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; margin-left: 6px; }
+  .logout-btn { background: none; border: 1px solid #e8e8e4; border-radius: 8px; padding: 6px 12px; font-size: 13px; color: #888; cursor: pointer; }
+  .logout-btn:hover { border-color: #ccc; color: #555; }
+
+  /* STATS */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 1rem; }
+  .stat-card { background: white; border: 1px solid #e8e8e4; border-radius: 10px; padding: 12px; text-align: center; }
+  .stat-num { font-size: 22px; font-weight: 700; color: #1a1a1a; }
+  .stat-label { font-size: 11px; color: #888; margin-top: 2px; }
+  .stat-card.green .stat-num { color: #0F6E56; }
+  .stat-card.red .stat-num { color: #993C1D; }
+  .stat-card.blue .stat-num { color: #1a6eb5; }
+
+  .tabs-main { display: flex; gap: 4px; margin-bottom: 1.5rem; border-bottom: 1px solid #e8e8e4; }
+  .tab-main { padding: 8px 16px; font-size: 13px; font-weight: 500; color: #888; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
+  .tab-main.active { color: #1D9E75; border-bottom-color: #1D9E75; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
   .card { background: white; border: 1px solid #e8e8e4; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
   .card-title { font-size: 11px; font-weight: 600; color: #999; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
   .mode-tabs { display: flex; gap: 8px; margin-bottom: 1rem; }
   .mode-tab { flex: 1; padding: 9px; background: #f5f5f0; border: 1px solid #e8e8e4; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; color: #888; text-align: center; transition: all 0.15s; }
   .mode-tab.active { background: #1D9E75; color: white; border-color: #1D9E75; }
   .topic-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
-  .topic-btn { background: #f9f9f7; border: 1px solid #e8e8e4; border-radius: 8px; padding: 10px 12px; cursor: pointer; text-align: left; transition: all 0.15s; }
+  .topic-btn { background: #f9f9f7; border: 1px solid #e8e8e4; border-radius: 8px; padding: 10px 12px; cursor: pointer; text-align: left; transition: all 0.15s; position: relative; }
   .topic-btn:hover { border-color: #1D9E75; background: #f0fbf7; }
   .topic-btn.selected { border: 2px solid #1D9E75; background: #E1F5EE; }
+  .topic-btn .check { position: absolute; top: 6px; right: 6px; width: 16px; height: 16px; background: #1D9E75; border-radius: 50%; display: none; align-items: center; justify-content: center; }
+  .topic-btn.selected .check { display: flex; }
+  .topic-btn .check i { color: white; font-size: 10px; }
   .topic-btn .t-icon { font-size: 16px; color: #1D9E75; margin-bottom: 4px; display: block; }
   .topic-btn .t-name { font-size: 13px; font-weight: 500; color: #1a1a1a; display: block; }
-  input[type=tel], textarea { width: 100%; padding: 10px 12px; border: 1px solid #e8e8e4; border-radius: 8px; font-size: 14px; font-family: inherit; color: #1a1a1a; background: white; outline: none; transition: border 0.15s; }
-  input[type=tel]:focus, textarea:focus { border-color: #1D9E75; }
+  .selected-topics { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .topic-tag { background: #E1F5EE; color: #0F6E56; font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 20px; display: flex; align-items: center; gap: 4px; }
+  .topic-tag i { cursor: pointer; font-size: 12px; }
+  input[type=tel], input[type=text], input[type=time], input[type=date], textarea, select { width: 100%; padding: 10px 12px; border: 1px solid #e8e8e4; border-radius: 8px; font-size: 14px; font-family: inherit; color: #1a1a1a; background: white; outline: none; transition: border 0.15s; }
+  input:focus, textarea:focus, select:focus { border-color: #1D9E75; }
   textarea { min-height: 80px; resize: vertical; }
   .hint { font-size: 12px; color: #aaa; margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .form-group label { display: block; font-size: 12px; font-weight: 500; color: #888; margin-bottom: 5px; }
   .call-btn { width: 100%; padding: 13px; background: #1D9E75; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s; }
   .call-btn:hover { background: #0F6E56; }
   .call-btn:disabled { background: #e8e8e4; color: #aaa; cursor: not-allowed; }
@@ -36,167 +82,524 @@
   .result.show { display: block; }
   .result.success { background: #E1F5EE; color: #0F6E56; }
   .result.error { background: #FAECE7; color: #993C1D; }
-  .badge { display: inline-block; background: #E1F5EE; color: #0F6E56; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; margin-left: 6px; }
+  .small-btn { padding: 6px 12px; background: #f5f5f0; border: 1px solid #e8e8e4; border-radius: 6px; font-size: 12px; font-weight: 500; color: #555; cursor: pointer; }
+  .small-btn:hover { background: #ebebeb; }
+  .small-btn.green { background: #E1F5EE; color: #0F6E56; border-color: #b3e6d3; }
+
+  /* DRIVER LIST */
+  .driver-list { display: flex; flex-direction: column; gap: 8px; }
+  .driver-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #f9f9f7; border: 1px solid #e8e8e4; border-radius: 8px; }
+  .driver-avatar { width: 34px; height: 34px; background: #1D9E75; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+  .driver-info { flex: 1; }
+  .driver-name { font-size: 14px; font-weight: 500; color: #1a1a1a; }
+  .driver-phone { font-size: 12px; color: #888; }
+  .driver-actions { display: flex; gap: 6px; }
+  .driver-call-btn { padding: 5px 10px; background: #1D9E75; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; }
+  .driver-del-btn { padding: 5px 8px; background: #FAECE7; color: #993C1D; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; }
+  .add-driver-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; margin-top: 12px; }
+  .add-driver-form button { padding: 10px 14px; background: #1D9E75; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+
+  /* HISTORY */
+  .history-list { display: flex; flex-direction: column; gap: 8px; }
+  .history-item { background: white; border: 1px solid #e8e8e4; border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; }
+  .history-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .history-icon.success { background: #E1F5EE; color: #0F6E56; }
+  .history-icon.error { background: #FAECE7; color: #993C1D; }
+  .history-info { flex: 1; }
+  .history-name { font-size: 14px; font-weight: 500; color: #1a1a1a; }
+  .history-phone { font-size: 12px; color: #888; }
+  .history-topics { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .history-topic-tag { background: #f5f5f0; color: #666; font-size: 11px; padding: 2px 7px; border-radius: 10px; }
+  .history-meta { text-align: right; }
+  .history-time { font-size: 12px; color: #aaa; }
+  .history-status { font-size: 12px; font-weight: 500; }
+  .history-status.success { color: #0F6E56; }
+  .history-status.error { color: #993C1D; }
+  .empty-state { text-align: center; padding: 2rem; color: #aaa; font-size: 14px; }
+
+  /* SCHEDULED */
+  .scheduled-list { display: flex; flex-direction: column; gap: 8px; }
+  .scheduled-item { background: #f9f9f7; border: 1px solid #e8e8e4; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 10px; }
+  .scheduled-info { flex: 1; }
+  .scheduled-time { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+  .scheduled-detail { font-size: 12px; color: #888; margin-top: 2px; }
+  .scheduled-del { padding: 5px 8px; background: #FAECE7; color: #993C1D; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; }
+
+  @media(max-width:500px) {
+    .stats-grid { grid-template-columns: repeat(2,1fr); }
+    .form-row { grid-template-columns: 1fr; }
+    .form-row-3 { grid-template-columns: 1fr; }
+    .add-driver-form { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
+
+<!-- PASSWORD SCREEN -->
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-logo"><i class="ti ti-lock"></i></div>
+    <div class="lock-title">ELD Dispatch Panel</div>
+    <div class="lock-sub">Enter your password to continue</div>
+    <input type="password" class="lock-input" id="lockInput" placeholder="••••••" onkeydown="if(event.key==='Enter')checkPass()" />
+    <button class="lock-btn" onclick="checkPass()">Unlock</button>
+    <div class="lock-error" id="lockError">Incorrect password. Try again.</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app" id="mainApp">
 <div class="container">
 
   <div class="header">
-    <div class="logo"><i class="ti ti-truck"></i></div>
-    <div>
-      <div class="title">ELD Dispatch Panel <span class="badge">Live</span></div>
-      <div class="subtitle">Driver training call management</div>
+    <div class="header-left">
+      <div class="logo"><i class="ti ti-truck"></i></div>
+      <div>
+        <div class="title">ELD Dispatch Panel <span class="badge-live">Live</span></div>
+        <div class="subtitle">Driver training call management</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="logout()"><i class="ti ti-logout"></i> Lock</button>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Total calls</div></div>
+    <div class="stat-card green"><div class="stat-num" id="stat-success">0</div><div class="stat-label">Successful</div></div>
+    <div class="stat-card red"><div class="stat-num" id="stat-failed">0</div><div class="stat-label">Failed</div></div>
+    <div class="stat-card blue"><div class="stat-num" id="stat-today">0</div><div class="stat-label">Today</div></div>
+  </div>
+
+  <div class="tabs-main">
+    <div class="tab-main active" onclick="switchTab('dispatch')"><i class="ti ti-phone-call"></i> Dispatch</div>
+    <div class="tab-main" onclick="switchTab('drivers')"><i class="ti ti-users"></i> Drivers</div>
+    <div class="tab-main" onclick="switchTab('scheduled')"><i class="ti ti-clock"></i> Scheduled</div>
+    <div class="tab-main" onclick="switchTab('history')"><i class="ti ti-history"></i> History</div>
+  </div>
+
+  <!-- DISPATCH TAB -->
+  <div class="tab-content active" id="tab-dispatch">
+    <div class="mode-tabs">
+      <div class="mode-tab active" onclick="setMode('single')" id="tab-single"><i class="ti ti-phone"></i> Single call</div>
+      <div class="mode-tab" onclick="setMode('bulk')" id="tab-bulk"><i class="ti ti-phone-plus"></i> Bulk call</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Select topics <span style="font-weight:400;text-transform:none;font-size:11px;color:#bbb">(one or more)</span></div>
+      <div class="topic-grid">
+        <div class="topic-btn" onclick="toggleTopic(this,'ELD Installation')"><div class="check"><i class="ti ti-check"></i></div><i class="ti ti-plug t-icon"></i><span class="t-name">ELD Installation</span></div>
+        <div class="topic-btn" onclick="toggleTopic(this,'App Permissions & Setup')"><div class="check"><i class="ti ti-check"></i></div><i class="ti ti-settings t-icon"></i><span class="t-name">App Setup</span></div>
+        <div class="topic-btn" onclick="toggleTopic(this,'Login')"><div class="check"><i class="ti ti-check"></i></div><i class="ti ti-login t-icon"></i><span class="t-name">Login</span></div>
+        <div class="topic-btn" onclick="toggleTopic(this,'Connecting to ELD Device')"><div class="check"><i class="ti ti-check"></i></div><i class="ti ti-bluetooth t-icon"></i><span class="t-name">Connect ELD</span></div>
+        <div class="topic-btn" onclick="toggleTopic(this,'HOS and Duty Status')"><div class="check"><i class="ti ti-check"></i></div><i class="ti ti-clock t-icon"></i><span class="t-name">HOS & Duty Status</span></div>
+        <div class="topic-btn" onclick="toggleTopic(this,'Certifying Logs')"><div class="check"><i class="ti ti-check"></i></div><i class="ti ti-file-check t-icon"></i><span class="t-name">Certify Logs</span></div>
+        <div class="topic-btn" onclick="toggleTopic(this,'DOT Roadside Inspection')"><div class="check"><i class="ti ti-check"></i></div><i class="ti ti-id t-icon"></i><span class="t-name">DOT Inspection</span></div>
+        <div class="topic-btn" onclick="toggleTopic(this,'ELD Malfunction')"><div class="check"><i class="ti ti-check"></i></div><i class="ti ti-alert-triangle t-icon"></i><span class="t-name">Malfunction</span></div>
+      </div>
+      <div class="selected-topics" id="selected-tags"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Additional instructions <span style="font-weight:400;text-transform:none;font-size:11px;color:#bbb">(optional)</span></div>
+      <textarea id="instruction" placeholder="Example: Speak in Uzbek only. This is a new driver, be extra patient. Remind them to certify logs by 9pm."></textarea>
+      <div class="hint"><i class="ti ti-info-circle" style="font-size:13px"></i> AI will follow these instructions during the call</div>
+    </div>
+
+    <div class="card" id="single-card">
+      <div class="card-title">Driver info</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Driver name (optional)</label>
+          <input type="text" id="driverName" placeholder="e.g. John Smith" />
+        </div>
+        <div class="form-group">
+          <label>Phone number</label>
+          <input type="tel" id="phone" placeholder="+1 (XXX) XXX-XXXX" />
+        </div>
+      </div>
+      <div style="margin-top:10px">
+        <label style="font-size:12px;font-weight:500;color:#888;display:block;margin-bottom:5px">Or select from saved drivers</label>
+        <select id="savedDriverSelect" onchange="fillFromSaved()">
+          <option value="">— Select saved driver —</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card" id="bulk-card" style="display:none">
+      <div class="card-title">Driver numbers <span style="font-weight:400;text-transform:none;font-size:11px;color:#bbb">(one per line)</span></div>
+      <textarea id="phones" style="min-height:100px" placeholder="+12345678901&#10;+09876543210&#10;+11223344556"></textarea>
+    </div>
+
+    <button class="call-btn" id="callBtn" onclick="makeCall()" disabled>
+      <i class="ti ti-phone-call"></i>
+      <span id="callBtnText">Select a topic first</span>
+    </button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <!-- DRIVERS TAB -->
+  <div class="tab-content" id="tab-drivers">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" style="margin-bottom:0">Saved drivers</div>
+        <span id="driver-count" style="font-size:12px;color:#888">0 drivers</span>
+      </div>
+      <div class="driver-list" id="driver-list"><div class="empty-state"><i class="ti ti-users" style="font-size:24px;display:block;margin-bottom:8px"></i>No drivers saved yet</div></div>
+      <div class="add-driver-form">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" id="newDriverName" placeholder="John Smith" />
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" id="newDriverPhone" placeholder="+1XXXXXXXXXX" />
+        </div>
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button onclick="addDriver()"><i class="ti ti-plus"></i> Add</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="mode-tabs">
-    <div class="mode-tab active" onclick="setMode('single')" id="tab-single">
-      <i class="ti ti-phone"></i> Single call
+  <!-- SCHEDULED TAB -->
+  <div class="tab-content" id="tab-scheduled">
+    <div class="card">
+      <div class="card-title">Schedule a call</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="schedDate" />
+        </div>
+        <div class="form-group">
+          <label>Time</label>
+          <input type="time" id="schedTime" />
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:10px">
+        <div class="form-group">
+          <label>Driver name</label>
+          <input type="text" id="schedName" placeholder="John Smith" />
+        </div>
+        <div class="form-group">
+          <label>Phone number</label>
+          <input type="tel" id="schedPhone" placeholder="+1XXXXXXXXXX" />
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:10px">
+        <label>Topic</label>
+        <select id="schedTopic">
+          <option value="ELD Installation">ELD Installation</option>
+          <option value="App Permissions & Setup">App Setup</option>
+          <option value="Login">Login</option>
+          <option value="Connecting to ELD Device">Connect ELD</option>
+          <option value="HOS and Duty Status">HOS & Duty Status</option>
+          <option value="Certifying Logs">Certify Logs</option>
+          <option value="DOT Roadside Inspection">DOT Inspection</option>
+          <option value="ELD Malfunction">Malfunction</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-top:10px">
+        <label>Instructions (optional)</label>
+        <input type="text" id="schedInstr" placeholder="Speak in Uzbek..." />
+      </div>
+      <button class="call-btn" style="margin-top:12px" onclick="scheduleCall()">
+        <i class="ti ti-calendar-plus"></i> Schedule Call
+      </button>
     </div>
-    <div class="mode-tab" onclick="setMode('bulk')" id="tab-bulk">
-      <i class="ti ti-phone-plus"></i> Bulk call
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Select topic</div>
-    <div class="topic-grid">
-      <div class="topic-btn" onclick="selectTopic(this,'ELD Installation')">
-        <i class="ti ti-plug t-icon"></i>
-        <span class="t-name">ELD Installation</span>
-      </div>
-      <div class="topic-btn" onclick="selectTopic(this,'App Permissions & Setup')">
-        <i class="ti ti-settings t-icon"></i>
-        <span class="t-name">App Setup</span>
-      </div>
-      <div class="topic-btn" onclick="selectTopic(this,'Login')">
-        <i class="ti ti-login t-icon"></i>
-        <span class="t-name">Login</span>
-      </div>
-      <div class="topic-btn" onclick="selectTopic(this,'Connecting to ELD Device')">
-        <i class="ti ti-bluetooth t-icon"></i>
-        <span class="t-name">Connect ELD</span>
-      </div>
-      <div class="topic-btn" onclick="selectTopic(this,'HOS and Duty Status')">
-        <i class="ti ti-clock t-icon"></i>
-        <span class="t-name">HOS & Duty Status</span>
-      </div>
-      <div class="topic-btn" onclick="selectTopic(this,'Certifying Logs')">
-        <i class="ti ti-file-check t-icon"></i>
-        <span class="t-name">Certify Logs</span>
-      </div>
-      <div class="topic-btn" onclick="selectTopic(this,'DOT Roadside Inspection')">
-        <i class="ti ti-id t-icon"></i>
-        <span class="t-name">DOT Inspection</span>
-      </div>
-      <div class="topic-btn" onclick="selectTopic(this,'ELD Malfunction')">
-        <i class="ti ti-alert-triangle t-icon"></i>
-        <span class="t-name">Malfunction</span>
+    <div class="card">
+      <div class="card-title">Upcoming scheduled calls</div>
+      <div class="scheduled-list" id="scheduled-list">
+        <div class="empty-state"><i class="ti ti-calendar" style="font-size:24px;display:block;margin-bottom:8px"></i>No scheduled calls</div>
       </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-title">Additional instructions <span style="font-weight:400;text-transform:none;font-size:11px;color:#bbb">(optional)</span></div>
-    <textarea id="instruction" placeholder="Example: Speak in Uzbek only. This is a new driver, be extra patient. Remind them to certify logs by 9pm."></textarea>
-    <div class="hint"><i class="ti ti-info-circle" style="font-size:13px"></i> AI will follow these instructions during the call</div>
+  <!-- HISTORY TAB -->
+  <div class="tab-content" id="tab-history">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" style="margin-bottom:0">Call history</div>
+        <button class="small-btn" onclick="clearHistory()"><i class="ti ti-trash"></i> Clear</button>
+      </div>
+      <div class="history-list" id="history-list">
+        <div class="empty-state"><i class="ti ti-phone-off" style="font-size:24px;display:block;margin-bottom:8px"></i>No calls yet</div>
+      </div>
+    </div>
   </div>
 
-  <div class="card" id="single-card">
-    <div class="card-title">Driver phone number</div>
-    <input type="tel" id="phone" placeholder="+1 (XXX) XXX-XXXX" />
-  </div>
-
-  <div class="card" id="bulk-card" style="display:none">
-    <div class="card-title">Driver numbers <span style="font-weight:400;text-transform:none;font-size:11px;color:#bbb">(one per line)</span></div>
-    <textarea id="phones" style="min-height:100px" placeholder="+12345678901&#10;+09876543210&#10;+11223344556"></textarea>
-  </div>
-
-  <button class="call-btn" id="callBtn" onclick="makeCall()" disabled>
-    <i class="ti ti-phone-call"></i>
-    <span id="callBtnText">Select a topic first</span>
-  </button>
-
-  <div class="result" id="result"></div>
-
+</div>
 </div>
 
 <script>
 const VAPI_KEY = "4c045117-929a-4ef0-a895-f0d66ddba11f";
 const ASSISTANT_ID = "7936215d-3b26-4a3d-a0e0-28a7c6d4594d";
 const CALLER_NUMBER = "dffca633-7dbd-4077-91a6-30d766e2ea80";
+const PASSWORD = "eld2024";
 
-let selectedTopic = null;
+let selectedTopics = [];
 let mode = 'single';
+let callHistory = JSON.parse(localStorage.getItem('eld_history') || '[]');
+let drivers = JSON.parse(localStorage.getItem('eld_drivers') || '[]');
+let scheduled = JSON.parse(localStorage.getItem('eld_scheduled') || '[]');
 
+// PASSWORD
+function checkPass() {
+  const val = document.getElementById('lockInput').value;
+  if(val === PASSWORD) {
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('mainApp').classList.add('visible');
+    updateStats();
+    renderDriverList();
+    renderScheduled();
+  } else {
+    document.getElementById('lockError').style.display = 'block';
+    document.getElementById('lockInput').value = '';
+  }
+}
+function logout() {
+  document.getElementById('lockScreen').style.display = 'flex';
+  document.getElementById('mainApp').classList.remove('visible');
+  document.getElementById('lockInput').value = '';
+  document.getElementById('lockError').style.display = 'none';
+}
+
+// TABS
+function switchTab(tab) {
+  const tabs = ['dispatch','drivers','scheduled','history'];
+  tabs.forEach((t,i) => {
+    document.querySelectorAll('.tab-main')[i].classList.toggle('active', t===tab);
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+  });
+  if(tab==='history') renderHistory();
+  if(tab==='drivers') renderDriverList();
+  if(tab==='scheduled') renderScheduled();
+}
+
+// MODE
 function setMode(m) {
   mode = m;
-  document.getElementById('tab-single').className = 'mode-tab' + (m==='single'?' active':'');
-  document.getElementById('tab-bulk').className = 'mode-tab' + (m==='bulk'?' active':'');
+  document.getElementById('tab-single').className = 'mode-tab'+(m==='single'?' active':'');
+  document.getElementById('tab-bulk').className = 'mode-tab'+(m==='bulk'?' active':'');
   document.getElementById('single-card').style.display = m==='single'?'block':'none';
   document.getElementById('bulk-card').style.display = m==='bulk'?'block':'none';
 }
 
-function selectTopic(el, topic) {
-  document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedTopic = topic;
+// TOPICS
+function toggleTopic(el, topic) {
+  const idx = selectedTopics.indexOf(topic);
+  if(idx > -1) { selectedTopics.splice(idx,1); el.classList.remove('selected'); }
+  else { selectedTopics.push(topic); el.classList.add('selected'); }
+  renderTags(); updateBtn();
+}
+function renderTags() {
+  document.getElementById('selected-tags').innerHTML = selectedTopics.map(t =>
+    `<div class="topic-tag">${t} <i class="ti ti-x" onclick="removeTag('${t}')"></i></div>`
+  ).join('');
+}
+function removeTag(topic) {
+  selectedTopics = selectedTopics.filter(t => t !== topic);
+  document.querySelectorAll('.topic-btn').forEach(btn => {
+    if(btn.querySelector('.t-name').textContent.trim() === getShortName(topic)) btn.classList.remove('selected');
+  });
+  renderTags(); updateBtn();
+}
+function getShortName(t) {
+  const map = {'App Permissions & Setup':'App Setup','Connecting to ELD Device':'Connect ELD','HOS and Duty Status':'HOS & Duty Status','Certifying Logs':'Certify Logs','DOT Roadside Inspection':'DOT Inspection','ELD Malfunction':'Malfunction','ELD Installation':'ELD Installation','Login':'Login'};
+  return map[t] || t;
+}
+function updateBtn() {
   const btn = document.getElementById('callBtn');
-  btn.disabled = false;
-  document.getElementById('callBtnText').textContent = mode === 'single' ? 'Call driver' : 'Call all drivers';
+  if(!selectedTopics.length) { btn.disabled=true; document.getElementById('callBtnText').textContent='Select a topic first'; return; }
+  btn.disabled=false;
+  document.getElementById('callBtnText').textContent = mode==='single'?'Call driver':'Call all drivers';
 }
 
-async function callOne(phone, topic, instruction) {
+// DRIVERS
+function addDriver() {
+  const name = document.getElementById('newDriverName').value.trim();
+  const phone = document.getElementById('newDriverPhone').value.trim();
+  if(!phone) return;
+  drivers.push({id: Date.now(), name, phone});
+  localStorage.setItem('eld_drivers', JSON.stringify(drivers));
+  document.getElementById('newDriverName').value = '';
+  document.getElementById('newDriverPhone').value = '';
+  renderDriverList();
+  updateSavedSelect();
+}
+function deleteDriver(id) {
+  drivers = drivers.filter(d => d.id !== id);
+  localStorage.setItem('eld_drivers', JSON.stringify(drivers));
+  renderDriverList(); updateSavedSelect();
+}
+function callDriver(phone, name) {
+  switchTab('dispatch');
+  document.getElementById('phone').value = phone;
+  document.getElementById('driverName').value = name;
+}
+function renderDriverList() {
+  const el = document.getElementById('driver-list');
+  document.getElementById('driver-count').textContent = drivers.length + ' driver' + (drivers.length!==1?'s':'');
+  if(!drivers.length) { el.innerHTML = '<div class="empty-state"><i class="ti ti-users" style="font-size:24px;display:block;margin-bottom:8px"></i>No drivers saved yet</div>'; return; }
+  el.innerHTML = drivers.map(d => `
+    <div class="driver-item">
+      <div class="driver-avatar">${(d.name||'?')[0].toUpperCase()}</div>
+      <div class="driver-info"><div class="driver-name">${d.name||'Unknown'}</div><div class="driver-phone">${d.phone}</div></div>
+      <div class="driver-actions">
+        <button class="driver-call-btn" onclick="callDriver('${d.phone}','${d.name}')"><i class="ti ti-phone"></i> Call</button>
+        <button class="driver-del-btn" onclick="deleteDriver(${d.id})"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>
+  `).join('');
+  updateSavedSelect();
+}
+function updateSavedSelect() {
+  const sel = document.getElementById('savedDriverSelect');
+  sel.innerHTML = '<option value="">— Select saved driver —</option>' + drivers.map(d => `<option value="${d.id}">${d.name} (${d.phone})</option>`).join('');
+}
+function fillFromSaved() {
+  const id = parseInt(document.getElementById('savedDriverSelect').value);
+  const d = drivers.find(x => x.id === id);
+  if(d) { document.getElementById('phone').value = d.phone; document.getElementById('driverName').value = d.name; }
+}
+
+// SCHEDULED
+function scheduleCall() {
+  const date = document.getElementById('schedDate').value;
+  const time = document.getElementById('schedTime').value;
+  const name = document.getElementById('schedName').value.trim();
+  const phone = document.getElementById('schedPhone').value.trim();
+  const topic = document.getElementById('schedTopic').value;
+  const instr = document.getElementById('schedInstr').value.trim();
+  if(!date || !time || !phone) { alert('Please fill date, time and phone number'); return; }
+  const entry = { id: Date.now(), date, time, name, phone, topic, instr };
+  scheduled.push(entry);
+  scheduled.sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
+  localStorage.setItem('eld_scheduled', JSON.stringify(scheduled));
+  document.getElementById('schedDate').value = '';
+  document.getElementById('schedTime').value = '';
+  document.getElementById('schedName').value = '';
+  document.getElementById('schedPhone').value = '';
+  document.getElementById('schedInstr').value = '';
+  renderScheduled();
+  checkScheduled();
+}
+function deleteScheduled(id) {
+  scheduled = scheduled.filter(s => s.id !== id);
+  localStorage.setItem('eld_scheduled', JSON.stringify(scheduled));
+  renderScheduled();
+}
+function renderScheduled() {
+  const el = document.getElementById('scheduled-list');
+  if(!scheduled.length) { el.innerHTML = '<div class="empty-state"><i class="ti ti-calendar" style="font-size:24px;display:block;margin-bottom:8px"></i>No scheduled calls</div>'; return; }
+  el.innerHTML = scheduled.map(s => `
+    <div class="scheduled-item">
+      <i class="ti ti-calendar-event" style="font-size:20px;color:#1D9E75;flex-shrink:0"></i>
+      <div class="scheduled-info">
+        <div class="scheduled-time">${s.date} at ${s.time}</div>
+        <div class="scheduled-detail">${s.name||'Unknown'} • ${s.phone} • ${s.topic}</div>
+      </div>
+      <button class="scheduled-del" onclick="deleteScheduled(${s.id})"><i class="ti ti-trash"></i></button>
+    </div>
+  `).join('');
+}
+async function checkScheduled() {
+  const now = new Date();
+  const toFire = scheduled.filter(s => {
+    const t = new Date(s.date + 'T' + s.time);
+    return t <= now;
+  });
+  for(const s of toFire) {
+    await callOne(s.phone, [s.topic], s.instr, s.name);
+    deleteScheduled(s.id);
+  }
+}
+setInterval(checkScheduled, 30000);
+
+// STATS
+function updateStats() {
+  const today = new Date().toDateString();
+  document.getElementById('stat-total').textContent = callHistory.length;
+  document.getElementById('stat-success').textContent = callHistory.filter(h=>h.status==='success').length;
+  document.getElementById('stat-failed').textContent = callHistory.filter(h=>h.status==='error').length;
+  document.getElementById('stat-today').textContent = callHistory.filter(h=>new Date(h.timestamp).toDateString()===today).length;
+}
+
+// CALL
+async function callOne(phone, topics, instruction, name) {
+  const topicStr = topics.join(', ');
+  const nameStr = name ? `Driver's name is ${name}. ` : '';
   const body = {
-    assistantId: ASSISTANT_ID,
-    phoneNumberId: CALLER_NUMBER,
-    customer: { number: phone },
-    assistantOverrides: { variableValues: { topic, extraInstructions: instruction || '' } }
+    assistantId: ASSISTANT_ID, phoneNumberId: CALLER_NUMBER,
+    customer: { number: phone, name: name||undefined },
+    assistantOverrides: {
+      variableValues: { topic: topicStr },
+      firstMessage: name ? `Hello ${name}! I'm calling from your ELD support team. I have a quick training for you today — it will only take a few minutes. What language do you prefer — English, Russian, or Uzbek?` : undefined,
+      model: (instruction||name) ? { messages: [{ role:'system', content: (nameStr)+(instruction?'SPECIAL INSTRUCTIONS: '+instruction:'') }] } : undefined
+    }
   };
   const res = await fetch('https://api.vapi.ai/call/phone', {
-    method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + VAPI_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
+    method:'POST', headers:{'Authorization':'Bearer '+VAPI_KEY,'Content-Type':'application/json'}, body:JSON.stringify(body)
   });
   return res.json();
 }
-
+function saveHistory(entry) {
+  callHistory.unshift({...entry, timestamp: Date.now()});
+  if(callHistory.length>100) callHistory = callHistory.slice(0,100);
+  localStorage.setItem('eld_history', JSON.stringify(callHistory));
+  updateStats();
+}
 async function makeCall() {
-  if (!selectedTopic) return;
+  if(!selectedTopics.length) return;
   const btn = document.getElementById('callBtn');
   const instruction = document.getElementById('instruction').value.trim();
+  const now = new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
   btn.disabled = true;
-
-  if (mode === 'single') {
+  if(mode==='single') {
     const phone = document.getElementById('phone').value.trim();
-    if (!phone) { showResult('error', 'Phone number required!'); btn.disabled = false; return; }
+    const name = document.getElementById('driverName').value.trim();
+    if(!phone) { showResult('error','Phone number required!'); btn.disabled=false; return; }
     document.getElementById('callBtnText').textContent = 'Calling...';
     try {
-      const r = await callOne(phone, selectedTopic, instruction);
-      if (r.id) showResult('success', '✓ Call started successfully!');
-      else showResult('error', '✗ Error: ' + (r.message || JSON.stringify(r)));
-    } catch(e) { showResult('error', '✗ Network error: ' + e.message); }
+      const r = await callOne(phone, selectedTopics, instruction, name);
+      if(r.id) { showResult('success','✓ Call started successfully!'); saveHistory({phone,name,topics:selectedTopics,status:'success',time:now}); }
+      else { showResult('error','✗ Error: '+(r.message||JSON.stringify(r))); saveHistory({phone,name,topics:selectedTopics,status:'error',time:now}); }
+    } catch(e) { showResult('error','✗ Network error: '+e.message); }
   } else {
     const lines = document.getElementById('phones').value.split('\n').map(l=>l.trim()).filter(l=>l.startsWith('+'));
-    if (!lines.length) { showResult('error', '✗ No valid phone numbers found!'); btn.disabled = false; return; }
-    document.getElementById('callBtnText').textContent = 'Calling ' + lines.length + ' drivers...';
-    let ok = 0, fail = 0;
-    for (const phone of lines) {
-      try { const r = await callOne(phone, selectedTopic, instruction); r.id ? ok++ : fail++; }
-      catch { fail++; }
+    if(!lines.length) { showResult('error','No valid numbers!'); btn.disabled=false; return; }
+    document.getElementById('callBtnText').textContent = 'Calling '+lines.length+'...';
+    let ok=0,fail=0;
+    for(const phone of lines) {
+      try { const r=await callOne(phone,selectedTopics,instruction,''); if(r.id){ok++;saveHistory({phone,name:'',topics:selectedTopics,status:'success',time:now});}else{fail++;saveHistory({phone,name:'',topics:selectedTopics,status:'error',time:now});} } catch{fail++;}
     }
-    showResult(fail===0?'success':'error', '✓ ' + ok + ' calls started' + (fail>0?' | ✗ '+fail+' failed':'') + ' out of ' + lines.length);
+    showResult(fail===0?'success':'error','✓ '+ok+' started'+(fail>0?' | ✗ '+fail+' failed':''));
   }
-
   document.getElementById('callBtnText').textContent = mode==='single'?'Call driver':'Call all drivers';
-  btn.disabled = false;
+  btn.disabled=false;
+}
+function showResult(type,msg) {
+  const d=document.getElementById('result'); d.className='result show '+type; d.textContent=msg;
 }
 
-function showResult(type, msg) {
-  const d = document.getElementById('result');
-  d.className = 'result show ' + type;
-  d.textContent = msg;
+// HISTORY
+function renderHistory() {
+  const el = document.getElementById('history-list');
+  if(!callHistory.length) { el.innerHTML='<div class="empty-state"><i class="ti ti-phone-off" style="font-size:24px;display:block;margin-bottom:8px"></i>No calls yet</div>'; return; }
+  el.innerHTML = callHistory.map(h=>`
+    <div class="history-item">
+      <div class="history-icon ${h.status}"><i class="ti ti-${h.status==='success'?'phone-check':'phone-x'}"></i></div>
+      <div class="history-info">
+        <div class="history-name">${h.name||'Unknown driver'}</div>
+        <div class="history-phone">${h.phone}</div>
+        <div class="history-topics">${h.topics.map(t=>`<span class="history-topic-tag">${t}</span>`).join('')}</div>
+      </div>
+      <div class="history-meta"><div class="history-time">${h.time}</div><div class="history-status ${h.status}">${h.status==='success'?'✓ Sent':'✗ Failed'}</div></div>
+    </div>
+  `).join('');
+}
+function clearHistory() {
+  if(confirm('Clear all call history?')) { callHistory=[]; localStorage.setItem('eld_history','[]'); renderHistory(); updateStats(); }
 }
 </script>
 </body>
