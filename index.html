@@ -535,7 +535,7 @@ async function callOne(phone, topics, instruction, name) {
     assistantOverrides: {
       variableValues: { topic: topicStr },
       firstMessage: name ? `Hello ${name}! I'm calling from your ELD support team. I have a quick training for you today — it will only take a few minutes. What language do you prefer — English, Russian, or Uzbek?` : undefined,
-      model: (instruction||name) ? { messages: [{ role:'system', content: (nameStr)+(instruction?'SPECIAL INSTRUCTIONS: '+instruction:'') }] } : undefined
+      model: (instruction||name) ? { provider: 'anthropic', model: 'claude-sonnet-4-20250514', messages: [{ role:'system', content: (nameStr)+(instruction?'SPECIAL INSTRUCTIONS: '+instruction:'') }] } : undefined
     }
   };
   const res = await fetch('https://api.vapi.ai/call/phone', {
