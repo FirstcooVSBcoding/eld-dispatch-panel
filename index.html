@@ -528,15 +528,17 @@ function updateStats() {
 // CALL
 async function callOne(phone, topics, instruction, name) {
   const topicStr = topics.join(', ');
-  const nameStr = name ? `Driver's name is ${name}. ` : '';
+  const extra = [];
+  if(name) extra.push("Driver name: " + name);
+  if(instruction) extra.push(instruction);
+  const fullTopic = topicStr + (extra.length ? ' | ' + extra.join(' | ') : '');
+  const overrides = { variableValues: { topic: fullTopic } };
+  if(name) overrides.firstMessage = `Hello ${name}! I'm calling from your ELD support team. I have a quick training for you today — it will only take a few minutes. What language do you prefer — English, Russian, or Uzbek?`;
   const body = {
-    assistantId: ASSISTANT_ID, phoneNumberId: CALLER_NUMBER,
-    customer: { number: phone, name: name||undefined },
-    assistantOverrides: {
-      variableValues: { topic: topicStr },
-      firstMessage: name ? `Hello ${name}! I'm calling from your ELD support team. I have a quick training for you today — it will only take a few minutes. What language do you prefer — English, Russian, or Uzbek?` : undefined,
-      model: (instruction||name) ? { provider: 'anthropic', model: 'claude-sonnet-4-20250514', messages: [{ role:'system', content: (nameStr)+(instruction?'SPECIAL INSTRUCTIONS: '+instruction:'') }] } : undefined
-    }
+    assistantId: ASSISTANT_ID,
+    phoneNumberId: CALLER_NUMBER,
+    customer: { number: phone },
+    assistantOverrides: overrides
   };
   const res = await fetch('https://api.vapi.ai/call/phone', {
     method:'POST', headers:{'Authorization':'Bearer '+VAPI_KEY,'Content-Type':'application/json'}, body:JSON.stringify(body)
