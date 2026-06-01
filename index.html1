@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELD Dispatch Panel</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f0; min-height: 100vh; display: flex; justify-content: center; padding: 2rem 1rem; }
+  .container { width: 100%; max-width: 680px; }
+  .header { display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem; }
+  .logo { width: 40px; height: 40px; background: #1D9E75; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+  .logo i { color: white; font-size: 20px; }
+  .title { font-size: 20px; font-weight: 600; color: #1a1a1a; }
+  .subtitle { font-size: 13px; color: #888; }
+  .card { background: white; border: 1px solid #e8e8e4; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+  .card-title { font-size: 11px; font-weight: 600; color: #999; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .mode-tabs { display: flex; gap: 8px; margin-bottom: 1rem; }
+  .mode-tab { flex: 1; padding: 9px; background: #f5f5f0; border: 1px solid #e8e8e4; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; color: #888; text-align: center; transition: all 0.15s; }
+  .mode-tab.active { background: #1D9E75; color: white; border-color: #1D9E75; }
+  .topic-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+  .topic-btn { background: #f9f9f7; border: 1px solid #e8e8e4; border-radius: 8px; padding: 10px 12px; cursor: pointer; text-align: left; transition: all 0.15s; }
+  .topic-btn:hover { border-color: #1D9E75; background: #f0fbf7; }
+  .topic-btn.selected { border: 2px solid #1D9E75; background: #E1F5EE; }
+  .topic-btn .t-icon { font-size: 16px; color: #1D9E75; margin-bottom: 4px; display: block; }
+  .topic-btn .t-name { font-size: 13px; font-weight: 500; color: #1a1a1a; display: block; }
+  input[type=tel], textarea { width: 100%; padding: 10px 12px; border: 1px solid #e8e8e4; border-radius: 8px; font-size: 14px; font-family: inherit; color: #1a1a1a; background: white; outline: none; transition: border 0.15s; }
+  input[type=tel]:focus, textarea:focus { border-color: #1D9E75; }
+  textarea { min-height: 80px; resize: vertical; }
+  .hint { font-size: 12px; color: #aaa; margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+  .call-btn { width: 100%; padding: 13px; background: #1D9E75; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s; }
+  .call-btn:hover { background: #0F6E56; }
+  .call-btn:disabled { background: #e8e8e4; color: #aaa; cursor: not-allowed; }
+  .result { border-radius: 8px; padding: 12px 14px; margin-top: 12px; font-size: 14px; font-weight: 500; display: none; }
+  .result.show { display: block; }
+  .result.success { background: #E1F5EE; color: #0F6E56; }
+  .result.error { background: #FAECE7; color: #993C1D; }
+  .badge { display: inline-block; background: #E1F5EE; color: #0F6E56; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; margin-left: 6px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="logo"><i class="ti ti-truck"></i></div>
+    <div>
+      <div class="title">ELD Dispatch Panel <span class="badge">Live</span></div>
+      <div class="subtitle">Driver training call management</div>
+    </div>
+  </div>
+
+  <div class="mode-tabs">
+    <div class="mode-tab active" onclick="setMode('single')" id="tab-single">
+      <i class="ti ti-phone"></i> Single call
+    </div>
+    <div class="mode-tab" onclick="setMode('bulk')" id="tab-bulk">
+      <i class="ti ti-phone-plus"></i> Bulk call
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Select topic</div>
+    <div class="topic-grid">
+      <div class="topic-btn" onclick="selectTopic(this,'ELD Installation')">
+        <i class="ti ti-plug t-icon"></i>
+        <span class="t-name">ELD Installation</span>
+      </div>
+      <div class="topic-btn" onclick="selectTopic(this,'App Permissions & Setup')">
+        <i class="ti ti-settings t-icon"></i>
+        <span class="t-name">App Setup</span>
+      </div>
+      <div class="topic-btn" onclick="selectTopic(this,'Login')">
+        <i class="ti ti-login t-icon"></i>
+        <span class="t-name">Login</span>
+      </div>
+      <div class="topic-btn" onclick="selectTopic(this,'Connecting to ELD Device')">
+        <i class="ti ti-bluetooth t-icon"></i>
+        <span class="t-name">Connect ELD</span>
+      </div>
+      <div class="topic-btn" onclick="selectTopic(this,'HOS and Duty Status')">
+        <i class="ti ti-clock t-icon"></i>
+        <span class="t-name">HOS & Duty Status</span>
+      </div>
+      <div class="topic-btn" onclick="selectTopic(this,'Certifying Logs')">
+        <i class="ti ti-file-check t-icon"></i>
+        <span class="t-name">Certify Logs</span>
+      </div>
+      <div class="topic-btn" onclick="selectTopic(this,'DOT Roadside Inspection')">
+        <i class="ti ti-id t-icon"></i>
+        <span class="t-name">DOT Inspection</span>
+      </div>
+      <div class="topic-btn" onclick="selectTopic(this,'ELD Malfunction')">
+        <i class="ti ti-alert-triangle t-icon"></i>
+        <span class="t-name">Malfunction</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Additional instructions <span style="font-weight:400;text-transform:none;font-size:11px;color:#bbb">(optional)</span></div>
+    <textarea id="instruction" placeholder="Example: Speak in Uzbek only. This is a new driver, be extra patient. Remind them to certify logs by 9pm."></textarea>
+    <div class="hint"><i class="ti ti-info-circle" style="font-size:13px"></i> AI will follow these instructions during the call</div>
+  </div>
+
+  <div class="card" id="single-card">
+    <div class="card-title">Driver phone number</div>
+    <input type="tel" id="phone" placeholder="+1 (XXX) XXX-XXXX" />
+  </div>
+
+  <div class="card" id="bulk-card" style="display:none">
+    <div class="card-title">Driver numbers <span style="font-weight:400;text-transform:none;font-size:11px;color:#bbb">(one per line)</span></div>
+    <textarea id="phones" style="min-height:100px" placeholder="+12345678901&#10;+09876543210&#10;+11223344556"></textarea>
+  </div>
+
+  <button class="call-btn" id="callBtn" onclick="makeCall()" disabled>
+    <i class="ti ti-phone-call"></i>
+    <span id="callBtnText">Select a topic first</span>
+  </button>
+
+  <div class="result" id="result"></div>
+
+</div>
+
+<script>
+const VAPI_KEY = "4c045117-929a-4ef0-a895-f0d66ddba11f";
+const ASSISTANT_ID = "7936215d-3b26-4a3d-a0e0-28a7c6d4594d";
+const CALLER_NUMBER = "dffca633-7dbd-4077-91a6-30d766e2ea80";
+
+let selectedTopic = null;
+let mode = 'single';
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('tab-single').className = 'mode-tab' + (m==='single'?' active':'');
+  document.getElementById('tab-bulk').className = 'mode-tab' + (m==='bulk'?' active':'');
+  document.getElementById('single-card').style.display = m==='single'?'block':'none';
+  document.getElementById('bulk-card').style.display = m==='bulk'?'block':'none';
+}
+
+function selectTopic(el, topic) {
+  document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedTopic = topic;
+  const btn = document.getElementById('callBtn');
+  btn.disabled = false;
+  document.getElementById('callBtnText').textContent = mode === 'single' ? 'Call driver' : 'Call all drivers';
+}
+
+async function callOne(phone, topic, instruction) {
+  const body = {
+    assistantId: ASSISTANT_ID,
+    phoneNumberId: CALLER_NUMBER,
+    customer: { number: phone },
+    assistantOverrides: { variableValues: { topic, extraInstructions: instruction || '' } }
+  };
+  const res = await fetch('https://api.vapi.ai/call/phone', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + VAPI_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  return res.json();
+}
+
+async function makeCall() {
+  if (!selectedTopic) return;
+  const btn = document.getElementById('callBtn');
+  const instruction = document.getElementById('instruction').value.trim();
+  btn.disabled = true;
+
+  if (mode === 'single') {
+    const phone = document.getElementById('phone').value.trim();
+    if (!phone) { showResult('error', 'Phone number required!'); btn.disabled = false; return; }
+    document.getElementById('callBtnText').textContent = 'Calling...';
+    try {
+      const r = await callOne(phone, selectedTopic, instruction);
+      if (r.id) showResult('success', '✓ Call started successfully!');
+      else showResult('error', '✗ Error: ' + (r.message || JSON.stringify(r)));
+    } catch(e) { showResult('error', '✗ Network error: ' + e.message); }
+  } else {
+    const lines = document.getElementById('phones').value.split('\n').map(l=>l.trim()).filter(l=>l.startsWith('+'));
+    if (!lines.length) { showResult('error', '✗ No valid phone numbers found!'); btn.disabled = false; return; }
+    document.getElementById('callBtnText').textContent = 'Calling ' + lines.length + ' drivers...';
+    let ok = 0, fail = 0;
+    for (const phone of lines) {
+      try { const r = await callOne(phone, selectedTopic, instruction); r.id ? ok++ : fail++; }
+      catch { fail++; }
+    }
+    showResult(fail===0?'success':'error', '✓ ' + ok + ' calls started' + (fail>0?' | ✗ '+fail+' failed':'') + ' out of ' + lines.length);
+  }
+
+  document.getElementById('callBtnText').textContent = mode==='single'?'Call driver':'Call all drivers';
+  btn.disabled = false;
+}
+
+function showResult(type, msg) {
+  const d = document.getElementById('result');
+  d.className = 'result show ' + type;
+  d.textContent = msg;
+}
+</script>
+</body>
+</html>
